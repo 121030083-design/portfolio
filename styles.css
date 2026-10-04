@@ -218,9 +218,9 @@ section { padding: 50px 0; position: relative; }
 /* 教育经历（图片左侧，完整奖项） */
 .edu { margin-top: 36px; display: grid; gap: 16px; }
 .edu__item {
-  width: 870px;
+  width: auto; max-width: 100%;
   padding: 22px 26px; border-radius: var(--radius-sm); /*控制教育经历卡片的margin边距；控制圆角程度*/
-  margin-right: -15px; /*margin控制卡片外的边距，padding控制内部组件的边距*/
+  margin-right: 0; /*margin控制卡片外的边距，padding控制内部组件的边距*/
   background: var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.6);
 }
@@ -607,5 +607,99 @@ section { padding: 50px 0; position: relative; }
   .strengths__grid, .skills { grid-template-columns: 1fr; }
   .nav__links { display: none; }
   .tl__period { margin-left: 0; }
+}
+
+/* =========================================================
+   图片作品 · 拍立得照片墙
+   初始：随机角度 + 位移散落一桌；悬停：摆正放大全彩，其余变暗
+   ========================================================= */
+.photo-wall {
+  margin-top: 40px;
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: flex-start;
+  gap: 30px 26px;
+  padding: 26px 6px 64px;
+}
+
+.polaroid {
+  position: relative;
+  z-index: 1;
+  padding: 10px 10px 34px;
+  background: #fffdf8;
+  border: 1px solid var(--hair);
+  box-shadow: 0 6px 18px rgba(70, 52, 24, 0.14);
+  filter: sepia(0.3) saturate(0.72) contrast(0.96) brightness(0.98);
+  transform: rotate(var(--r, 0deg)) translate(var(--x, 0), var(--y, 0));
+  transition:
+    transform 0.6s cubic-bezier(0.25, 1.25, 0.4, 1) calc(var(--i, 0) * 28ms),
+    opacity 0.5s ease calc(var(--i, 0) * 28ms),
+    box-shadow 0.3s ease, filter 0.3s ease;
+  will-change: transform;
+}
+
+/* 滚动进场前：整叠照片悬空收拢，进入视口后按 --i 依次撒落归位
+   （.js 前缀为渐进增强：JS 不可用时照片直接显示，不会空白） */
+.js .photo-wall:not(.is-visible) .polaroid {
+  opacity: 0;
+  transform: translateY(-90px) scale(0.55) rotate(calc(var(--r, 0deg) - 14deg));
+}
+
+.polaroid img {
+  display: block;
+  height: 170px;            /* 高度统一、宽度按原图比例自适应 → 每张宽窄各异 */
+  width: auto;
+  max-width: 250px;
+  object-fit: cover;
+  background: var(--beige-soft);
+}
+
+.polaroid figcaption {
+  position: absolute; left: 0; right: 0; bottom: 9px;
+  padding: 0 8px;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transform: translateY(5px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 12 组循环的"乱序"基准姿态 */
+.polaroid:nth-child(12n+1)  { --r: -6deg; --x: -10px; --y: 6px; }
+.polaroid:nth-child(12n+2)  { --r: 4deg;  --x: 6px;   --y: -4px; }
+.polaroid:nth-child(12n+3)  { --r: -2deg; --x: 2px;   --y: 10px; }
+.polaroid:nth-child(12n+4)  { --r: 7deg;  --x: -4px;  --y: -8px; }
+.polaroid:nth-child(12n+5)  { --r: -5deg; --x: 12px;  --y: 2px; }
+.polaroid:nth-child(12n+6)  { --r: 3deg;  --x: -12px; --y: 8px; }
+.polaroid:nth-child(12n+7)  { --r: 8deg;  --x: 4px;   --y: -10px; }
+.polaroid:nth-child(12n+8)  { --r: -7deg; --x: -2px;  --y: -2px; }
+.polaroid:nth-child(12n+9)  { --r: 2deg;  --x: 14px;  --y: 6px; }
+.polaroid:nth-child(12n+10) { --r: -4deg; --x: -14px; --y: -6px; }
+.polaroid:nth-child(12n+11) { --r: 6deg;  --x: 8px;   --y: 12px; }
+.polaroid:nth-child(12n+12) { --r: -3deg; --x: -8px;  --y: -12px; }
+
+/* 悬停聚光灯：其余照片变暗泛黄，当前一张摆正、浮起、全彩、金晕 */
+@media (hover: hover) {
+  .photo-wall:hover .polaroid { filter: sepia(0.35) saturate(0.55) brightness(0.68); }
+  .photo-wall .polaroid:hover {
+    z-index: 30;
+    filter: none;
+    transform: rotate(0deg) translate(0, -16px) scale(1.5);
+    box-shadow:
+      0 34px 70px rgba(70, 52, 24, 0.32),
+      0 0 0 1px rgba(176, 141, 91, 0.4),
+      0 0 44px rgba(176, 141, 91, 0.38);
+    transition:
+      transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease, filter 0.22s ease, opacity 0.3s ease;
+  }
+  .photo-wall .polaroid:hover figcaption { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+  .photo-wall { gap: 20px 14px; padding-bottom: 46px; }
+  .polaroid img { height: 120px; max-width: 180px; }
+  .photo-wall .polaroid:hover { transform: rotate(0deg) translate(0, -10px) scale(1.32); }
 }
 

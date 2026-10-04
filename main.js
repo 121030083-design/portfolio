@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // initSlideCarousels() // 视觉板块：横向滚动轮播
   initAccordions() // 文字作品：文件夹 / 论文折叠
   initMusicPlayer() // Muse AI 音乐播放器
-  initVisualControls() // 视觉板块：方向 / 自动播放开关
+  initPhotoWall() // 图片作品：照片墙滚动进场
 })
 
 /* ---------------------------------------------------------
@@ -218,5 +218,29 @@ function initMusicPlayer() {
   audio.addEventListener('error', () => {
     showHint(`音频文件待补充：把 mp3 放到 ${audio.getAttribute('src')}`)
   })
+}
+
+/* ---------------------------------------------------------
+   5. 图片作品 · 照片墙滚动进场
+   进入视口后加 .is-visible，配合 CSS 让照片依次"撒落"归位
+   --------------------------------------------------------- */
+function initPhotoWall() {
+  const wall = document.querySelector('.photo-wall')
+  if (!wall || !('IntersectionObserver' in window)) {
+    if (wall) wall.classList.add('is-visible')
+    return
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          io.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.12 }
+  )
+  io.observe(wall)
 }
 
