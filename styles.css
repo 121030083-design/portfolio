@@ -215,11 +215,11 @@ section { padding: 50px 0; position: relative; scroll-margin-top: 100px; }
 .chip__highlight {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 16px; border-radius: 999px;
-  background: rgba(176, 141, 91, 0.14);
-  border: 1px solid rgba(176, 141, 91, 0.35);
-  font-size: 13.5px; color: #8a6a3d;
+  background: rgba(255, 135, 135, 0.42);
+  border: 1px solid rgba(176, 91, 91, 0.35);
+  font-size: 13.5px; color: #e47377;
 }
-.chip__highlight b { color: #8a6a3d; font-weight: 700; }
+.chip__highlight b { color: #5b2121; font-weight: 700; }
 
 /* 教育经历（图片左侧，完整奖项） */
 .edu { margin-top: 36px; display: grid; gap: 16px; }
